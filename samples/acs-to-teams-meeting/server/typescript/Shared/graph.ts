@@ -51,5 +51,54 @@ async function createNewMeetingAsync(userId) {
     const newEvent = await appGraphClient.api(newMeeting).post(event);    
     return newEvent;     
 }
+
+async function getUsers() {
+    ensureGraphForAppOnlyAuth();
+    const users = await appGraphClient.api(`/users`).get();
+
+    return users;
+
+}
+
+async function getOnlineMeetingId(userId, joinUrl) {
+    ensureGraphForAppOnlyAuth();
+    const onlineMeetings = await appGraphClient.api(`/users/${userId}/onlineMeetings`).filter(`JoinWebUrl eq '${joinUrl}'`).get();
+    return onlineMeetings;
+
+}
+
+async function getListAttendeeReports(userId, meetingId) {
+  ensureGraphForAppOnlyAuth();
+  console.log(`/users/${userId}/onlineMeetings/${meetingId}/attendanceReports`)
+  const attendanceReports = await appGraphClient.api(`/users/${userId}/onlineMeetings/${meetingId}/attendanceReports`).get();
+  return attendanceReports;
+
+}
+
+
+
+async function getListAttendeeReportDetail(userId, meetingId, reportId) {
+  ensureGraphForAppOnlyAuth();
+  console.log(`/users/${userId}/onlineMeetings/${meetingId}/attendanceReports/${reportId}`)
+  const attendanceReport = await appGraphClient.api(`/users/${userId}/onlineMeetings/${meetingId}/attendanceReports/${reportId}`).expand('attendanceRecords').get();
+  return attendanceReport;
+
+}
+
+async function getListRecords(userId, meetingId) {
+  ensureGraphForAppOnlyAuth();
+  console.log(`/users/${userId}/onlineMeetings/${meetingId}/recordings`)
+  const records = await appGraphClient.api(`/users/${userId}/onlineMeetings/${meetingId}/recordings`).get();
+  return records;
+
+}
+
+async function getRecord(userId, meetingId, recordId) {
+  ensureGraphForAppOnlyAuth();
+  console.log(`/users/${userId}/onlineMeetings/${meetingId}/recordings/${recordId}/content`)
+  const record = await appGraphClient.api(`/users/${userId}/onlineMeetings/${meetingId}/recordings/${recordId}/content`).get();
+  return record;
+
+}
       
-export default createNewMeetingAsync;
+export {createNewMeetingAsync, getOnlineMeetingId, getListAttendeeReports, getListAttendeeReportDetail, getListRecords, getRecord, getUsers}

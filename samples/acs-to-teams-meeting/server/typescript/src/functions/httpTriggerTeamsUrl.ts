@@ -1,5 +1,5 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import createNewMeetingAsync from '../../Shared/graph';
+import * as GraphApi from '../../Shared/graph';
 
 let teamsMeetingLink;
 
@@ -8,10 +8,11 @@ export async function httpTriggerTeamsUrl(request: HttpRequest, context: Invocat
     const userId = process.env.USER_ID;
     context.log('UserId', userId);
     
-    teamsMeetingLink = await createNewMeetingAsync(userId);
+    teamsMeetingLink = await GraphApi.createNewMeetingAsync(userId);
     const body = JSON.stringify(teamsMeetingLink);
     const meeting = JSON.parse(body);
     context.log("meeting:", meeting);
+    context.log("meeting id: ", meeting.id);
     
     return {
         // status: 200, /* Defaults to 200 */
